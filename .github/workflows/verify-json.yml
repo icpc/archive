@@ -1,0 +1,44 @@
+name: Validate Scoreboard JSON Files
+
+on:
+  push:
+    paths:
+      - "scoreboard/**"
+      - ".github/workflows/**"
+  pull_request:
+    paths:
+      - "scoreboard/**"
+      - ".github/workflows/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies (if any)
+        run: |
+          pip install -r requirements.txt || true
+
+      - name: Validate teams.json
+        run: |
+          python scoreboard/jsonTeamVerifier.py scoreboard/teams.json
+
+      - name: Validate awards.json
+        run: |
+          python scoreboard/jsonAwardsVerifier.py scoreboard/awards.json
+
+      - name: Validate scoreboard.json
+        run: |
+          python scoreboard/jsonScoreboardVerifier.py scoreboard/scoreboard.json
+      
+      - name: Validate problemName.json
+        run: |
+           python scoreboard/jsonProblemNameVerifier.py scoreboard/problemName.json
